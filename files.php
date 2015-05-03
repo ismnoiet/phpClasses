@@ -41,6 +41,7 @@ class Dir{
 			$tmp_files = split(',',$tmp_files);	
 
 			//tmp_files now cantains all the file names without the extension and the prefix 
+			// we are ready to sort tmp_files array
 			sort($tmp_files);
 
 			// return back files list with  the prefix and  the extension
