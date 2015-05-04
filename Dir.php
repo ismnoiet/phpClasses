@@ -1,23 +1,28 @@
 <?php 
-
-	// condition : files must have the obviously the same prefix and also the same extension 
-	// todo : remove the same extension issue
-		
-
+	// condition : files must have obviously the same prefix and also the same extension 
+	// todo : remove the same extension issue		
 class Dir{
-		public $directory;
+		private $directory;
+		public $ds;
 		function __construct($directory){
-			$this->directory = $directory;
+			$this->setDir($directory);
+			$this->ds = DIRECTORY_SEPARATOR;
 		}
 
+		public function setDir($dir){
+			$this->dir = $dir;	
+		}
+		public function getDir(){
+			return $this->dir;
+		}
 		/**
 		 * list all the files contained within a folder without the default . and .. folders
 		 * @return  array $files contains all the files  
 		 */
 		function files(){
 			$files = array();
-			if(is_dir($this->directory)){
-				$tmp_files = scandir($this->directory);
+			if(is_dir($this->getDir())){
+				$tmp_files = scandir($this->getDir());
 				for($i=2;$i<count($tmp_files);$i++){
 					$files[] = $tmp_files[$i];
 				}
@@ -63,6 +68,24 @@ class Dir{
 			$last_file = $sorted_files[count($sorted_files)-1];
 			return $last_file;
 		}
+
+		// this method must be revised !
+		// 
+		function changeExtension($newExtension){
+			$files = $this->files();	
+			print_r($files);
+			foreach ($files as $file) {
+				preg_replace_callback('/(.+)\.(.+?)$/',function($matches){					
+					echo $matches[0];
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1]);					
+				}, 
+				$file);				
+			}
+			foreach ($files as $file){
+				rename($this->dir.$this->ds.$file, $this->dir.$this->ds.$file.$newExtension);
+			}
+
+		}
 	}
 
 
@@ -70,9 +93,11 @@ class Dir{
 	examples : 
 	==========
 */
-	// $dir = new Dir('uploads');
+	// $dir = new Dir('uploads');	
+	// $dir->changeExtension('.php');
 	// print_r($dir->files());		
-	//print_r($dir->sort('logo','png'));
+	// print_r($dir->sort('logo','png'));
 	//echo $dir->last('logo','png');
- ?>
+
+?>
 
