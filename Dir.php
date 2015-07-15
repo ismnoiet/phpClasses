@@ -73,10 +73,10 @@ class Dir{
 		// 
 		function changeExtension($newExtension){
 			$files = $this->files();	
-			print_r($files);
+			// print_r($files);
 			foreach ($files as $file) {
 				preg_replace_callback('/(.+)\.(.+?)$/',function($matches){					
-					echo $matches[0];
+				//	echo $matches[0];
 					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1]);					
 				}, 
 				$file);				
