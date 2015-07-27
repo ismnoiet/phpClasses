@@ -1,7 +1,7 @@
 # phpClasses
 A repo containing a list of useful php classes
 
-Dir.php file contains Dir Class
+Dir.php file contains Dir Class.<br>
 Dir class contains methods to deal with directories and files
 
 *files() :* returns an array containing all the files listed in a given directory(without . and .. folders)
