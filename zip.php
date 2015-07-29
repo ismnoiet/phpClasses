@@ -73,10 +73,9 @@ class Zip{
 }
 
 // example
-$zip = new Zip();
-$zip->content('test.zip');
-
-print_r($zip->show());
+// $zip = new Zip();
+// $zip->content('test.zip');
+//print_r($zip->show());
 
 // $zip->extract('test.zip','extract');
 
