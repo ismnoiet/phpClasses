@@ -87,11 +87,6 @@ class Dir{
 				}, 
 				$file);				
 			}
-
-//			foreach ($files as $file){
-//				rename($this->dir.$this->ds.$file, $this->dir.$this->ds.$file.$newExtension);
-//			}
-
 		}
 
 
