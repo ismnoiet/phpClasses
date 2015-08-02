@@ -1,9 +1,10 @@
 <?php 
-	// condition : files must have obviously the same prefix and also the same extension 
-	// todo : remove the same extension issue		
+		
 class Dir{
+
 		private $directory;
 		public $ds;
+
 		function __construct($directory){
 			$this->setDir($directory);
 			$this->ds = DIRECTORY_SEPARATOR;
@@ -12,6 +13,7 @@ class Dir{
 		public function setDir($dir){
 			$this->dir = $dir;	
 		}
+
 		public function getDir(){
 			return $this->dir;
 		}
@@ -65,39 +67,161 @@ class Dir{
 		 */
 		function last($prefix,$extension){
 			$sorted_files =  $this->sort($prefix,$extension);
-			$last_file = $sorted_files[count($sorted_files)-1];
+			// $last_file = $sorted_files[count($sorted_files)-1];
+			$last_file = end($sorted_files);
 			return $last_file;
 		}
 
-		// this method must be revised !
-		// 
+		
 		function changeExtension($newExtension){
+
+			$this->newExtension = $newExtension;
+
 			$files = $this->files();	
 			// print_r($files);
 			foreach ($files as $file) {
 				preg_replace_callback('/(.+)\.(.+?)$/',function($matches){					
 				//	echo $matches[0];
-					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1]);					
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1].'.'.$this->newExtension);					
+					print_r($matches);
 				}, 
 				$file);				
 			}
-			foreach ($files as $file){
-				rename($this->dir.$this->ds.$file, $this->dir.$this->ds.$file.$newExtension);
+
+//			foreach ($files as $file){
+//				rename($this->dir.$this->ds.$file, $this->dir.$this->ds.$file.$newExtension);
+//			}
+
+		}
+
+
+		function addPrefix($prefix){
+
+			$this->prefix = $prefix;
+
+			$files = $this->files();
+
+			foreach ($files as $file) {
+				preg_replace_callback('/(.+)\.(.+?)$/',function($matches){					
+				//	echo $matches[0];
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$this->prefix.$matches[0]);					
+					
+				}, 
+				$file);				
+			}
+
+
+		}
+
+		function changePrefix($old_prefix,$new_prefix){
+
+			$this->new_prefix = $new_prefix;
+			$this->counter = 0;
+
+			$files = $this->files();	
+
+			foreach ($files as $file) {
+				preg_replace_callback("/^(".$old_prefix.")(.+?\.(.+?))$/",function($matches){					
+				//	echo $matches[0];
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$this->new_prefix.$matches[2]);										
+				
+					$this->counter++;
+
+					print_r($matches);	
+
+				}, 
+				$file);				
+			}
+			return $this->counter;
+	
+		}
+
+		function removePrefix($prefix){
+
+			return $this->changePrefix($prefix,'');
+
+		}
+
+
+		function addSuffix($suffix){
+
+			$this->suffix = $suffix;
+
+			$files = $this->files();
+
+			foreach ($files as $file) {
+				preg_replace_callback('/(.+)\.(.+?)$/',function($matches){					
+				//	echo $matches[0];
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1].$this->suffix.'.'.$matches[2]);										
+				}, 
+				$file);				
 			}
 
 		}
-	}
+
+		function changeSuffix($old_suffix,$new_suffix){
+
+			$this->new_suffix = $new_suffix;
+
+			$this->counter = 0;
+
+			$files = $this->files();	
+
+			foreach ($files as $file) {
+				preg_replace_callback("/^(.+?)(".$old_suffix.")(\..+?)$/",function($matches){					
+				//	echo $matches[0];
+					rename($this->dir.$this->ds.$matches[0],$this->dir.$this->ds.$matches[1].$this->new_suffix.$matches[3]);										
+				
+
+					// $1_suffix.$3
+
+					$this->counter++;
+
+					print_r($matches);	
+
+				}, 
+				$file);				
+			}
+			return $this->counter;
+	
+		}
+
+		function removeSuffix($suffix){
+
+			return $this->changeSuffix($suffix,'');			
+		}
+
+
+
+}
 
 
 /*	
 	examples : 
 	==========
 */
-	// $dir = new Dir('uploads');	
-	// $dir->changeExtension('.php');
-	// print_r($dir->files());		
-	// print_r($dir->sort('logo','png'));
-	//echo $dir->last('logo','png');
+	// $dir = new Dir('uploads'); // uploads folder must be at the same level as  this file (Dir.php)
 
+	// $dir->changeExtension('there');
+	//echo $dir->last('logo','png');
+	
+	
+	// print_r($dir->files());		
+	 
+	// print_r($dir->sort('logo','png'));
+
+	/* prefix stuff 
+	**************************************************************** 
+	|	$dir->addPrefix('_ham');
+	|	$dir->removePrefix('_ham');
+	|	echo ":" . $dir->changePrefix('_prefix','_replacement');
+	****************************************************************/
+	
+	/* suffix stuff 
+	**************************************************************** 
+	|	$dir->addSuffix('_ham');
+	|	$dir->removeSuffix('_ham');
+	|	echo ":" . $dir->changeSuffix('_suffix','_replacement');
+	****************************************************************/
 ?>
 
