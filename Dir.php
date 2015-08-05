@@ -136,6 +136,26 @@ class Dir{
 			return $this->changePrefix($prefix,'');
 
 		}
+		
+		function removeWithoutPrefix($prefix){
+
+			$this->counter = 0;
+
+			$files = $this->files();
+
+			foreach ($files as $file) {
+
+				if( !preg_match("/^(".$prefix.")(.+?\.(.+?))$/",$file) ){
+
+					unlink($this->dir.$this->ds.$file);
+					$this->counter++;
+
+				}				
+			} 
+
+			return $this->counter;
+
+		}
 
 
 		function addSuffix($suffix){
@@ -184,6 +204,25 @@ class Dir{
 		function removeSuffix($suffix){
 
 			return $this->changeSuffix($suffix,'');			
+		}
+		
+		function removeWithoutSuffix($suffix){
+
+			$this->counter = 0;
+
+			$files = $this->files();
+
+			foreach ($files as $file) {
+
+				if( !preg_match("/^(.+?)(".$suffix.")(\..+?)$/",$file) ){
+
+					unlink($this->dir.$this->ds.$file);
+					$this->counter++;
+
+				}				
+			} 
+
+			return $this->counter;
 		}
 
 
