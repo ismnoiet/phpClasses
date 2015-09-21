@@ -224,6 +224,47 @@ class Dir{
 
 			return $this->counter;
 		}
+		
+		
+		
+		//TODO	findPrefix(),findSuffix,findExtension
+		
+		function findPrefix($dir,$prefix=null,$recursion=false){
+			// if recursion is false then search in the $dir only
+			if(!$recursion){
+				$original_dir = $this->getDir();
+				$this->setDir($dir);
+				$dir_files = $this->files();
+				// set back the original dir attribute
+				$this->setDir($original_dir);
+
+				
+				$this->findPrefix2($dir_files,$prefix);
+
+
+			}else{
+				// use recursion to find files
+				$files  = $this->getAllContent('./');
+
+				return $this->findPrefix2($files,$prefix);	
+			} 
+		}
+
+		private function findPrefix2($elements=array(),$prefix=null){
+
+			// convert the elements array to one big string then serch for the prefix	
+			$files_string = implode('|',$elements);
+
+			// get all the bower.json files without the .bower.json files 
+			// ^| to remove all items that starts with | expect for the current item
+			// ^. to remove elements that starts with dot(.)
+			$regex = '/\|(([^|.]+?)'.$prefix.')\|/'; 	
+
+			preg_match_all($regex,$files_string,$matches);
+			// print_r($matches[1]);
+			return $matches[1];
+
+		}	
 
 
 
